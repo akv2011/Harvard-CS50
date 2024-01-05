@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": ".."
+		},
+		{
+			"name": "lean4-samples",
+			"path": "../lEAN/lean4-samples"
+		}
+	],
+	"settings": {
+		"powershell.cwd": "ArunC"
+	}
+}
