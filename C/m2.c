@@ -2,8 +2,15 @@
 #include"cs50.h"
 int main(void)
 {
-    const int n = get_int("Size:");
-    //need to declare onlu once n 
+     int n = get_int("Size:");
+    
+    while(n<1)
+    {
+        n=get_int("Size:");
+    }
+
+    //here 2 time get string used unefficient so use do while loop
+
     for (int i= 0; i<n; i++)
     {
 
