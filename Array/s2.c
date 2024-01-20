@@ -8,7 +8,5 @@ int main(void)
     number[i]=get_int("Score is:\n");
     }
     
-    printf("average is:%f\n",number[0]+number[1]+number[2]/3.0);
-    
-
+    printf("average is:%f\n",number[0]+number[1]+number[2]/3.0);    
 }
