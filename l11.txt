@@ -1,0 +1,21 @@
+typdef struct
+{
+    int number;
+    node*next;
+}
+node;
+
+
+ here node isn't a data type thus without definnig node can't be used thius
+ using this jugaad
+
+typdef struct node
+{
+    int number;
+    struct node *next;
+}
+node;
+
+
+can't use binary search also as don't know the middle
+
