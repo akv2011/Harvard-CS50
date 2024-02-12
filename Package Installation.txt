@@ -51,3 +51,13 @@ Keep in mind that the exact syntax and behavior may vary slightly depending
  a consistent and up-to-date software environment on Arch Linux-based systems.
  If you're using pacman in MSYS2 on Windows, it helps manage packages in the MSYS2 environment, 
 providing a Unix-like experience on Windows systems.
+
+
+
+List Reverse Dependencies:
+Run the following command to list packages that depend on Python:
+
+bash
+Copy code
+pactree -r mingw-w64-x86_64-python
+This will show you a list of packages that depend on Python.
