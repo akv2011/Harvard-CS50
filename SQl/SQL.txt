@@ -1,0 +1,701 @@
+$ sqlite3 favourites.db
+SQLite version 3.45.1 2024-01-30 16:01:20 (UTF-16 console I/O)
+Enter ".help" for usage hints.
+sqlite> 
+sqlite> .import favourites.csv favourites
+sqlite> .schema
+CREATE TABLE IF NOT EXISTS "favourites"(
+"Timestamp" TEXT, "language" TEXT, "problem" TEXT);
+sqlite> SELECT * FROM favourites;
+10/24/2022 13:38:14|Python|Bulbs
+10/24/2022 13:38:15|Python|Tideman
+10/24/2022 13:38:15|C|Caesar
+10/24/2022 13:38:15|Python|Mario
+
+#creates a favourites.db file
+#nxt time no need to do all  just call with file name
+
+$ sqlite3 favourites.db
+sqlite> SELECT language FROM favourites;
+C
+Python
+Python
+Python
+Python
+Scratch
+
+sqlite> SELECT COUNT(*) FROM  favourites;
+430
+sqlite> SELECT DISTINCT(language) FROM  favourites;
+C
+Python
+Scratch
+
+sqlite> SELECT  COUNT( DISTINCT(language)) FROM  favourites;
+COUNT( DISTINCT(language))
+3
+
+sqlite> SELECT  COUNT( DISTINCT(language)) as n  FROM  favourites;
+#should be like this but not sql viewer thus simple search type
+n
+3
+
+SELECT COUNT(*) FROM favourites WHERE language='C'; 
+COUNT(*)
+98
+
+ SELECT COUNT(*) FROM favourites WHERE language='C' AND problem='Mario';
+ COUNT(*)
+3
+
+sqlite> SELECT language, COUNT(*) FROM favourites GROUP BY language;
+|431
+C|98
+Python|270
+Scratch|62
+
+sqlite> SELECT language, COUNT(*) FROM favourites GROUP BY language ORDER by COUNT(*);
+Scratch|62
+C|98
+Python|270
+|431
+
+sqlite> SELECT language, COUNT(*) FROM favourites GROUP BY language ORDER by COUNT(*) DESC;   
+|431
+Python|270
+C|98
+Scratch|62
+
+SELECT language,COUNT(*) FROM favourites GROUP BY language ORDER by COUNT(*) DESC LIMIT 1;
+|431
+#SHOULD BE PYTHOH 270  don't know why it's showing 470 too
+
+sqlite> INSERT INTO favourites(language,problem) VALUES('SQL','Fiftyville');
+
+sqlite> SELECT DISTINCT language FROM favourites;
+C
+Python
+Scratch
+
+SQL
+
+sqlite> UPDATE favourites SET language='C++' WHERE language='C';
+sqlite> SELECT * FROM favourites WHERE language='C';
+sqlite> SELECT * FROM favourites WHERE language='C++';
+10/24/2022 8:33:26|C++|Credit
+10/24/2022 13:26:23|C++|Bulbs
+10/24/2022 13:37:30|C++|Speller
+10/24/2022 13:37:34|C++|Cash
+10/24/2022 13:37:34|C++|Hello
+
+
+DELETE FROM favourites WHERE problem='Tideman';
+DELETE FROM favourites;#deletes everything;
+
+$ sqlite3 shows.db
+SQLite version 3.45.1 2024-01-30 16:01:20 (UTF-16 console I/O)
+Enter ".help" for usage hints.
+sqlite> .schema
+CREATE TABLE genres (
+    show_id INTEGER NOT NULL,
+    genre TEXT NOT NULL,
+    FOREIGN KEY(show_id) REFERENCES shows(id)
+);
+CREATE TABLE people (
+    id INTEGER,
+    name TEXT NOT NULL,
+    birth NUMERIC,
+    PRIMARY KEY(id)
+);
+CREATE TABLE ratings (
+    show_id INTEGER NOT NULL,
+    rating REAL NOT NULL,
+    votes INTEGER NOT NULL,
+    FOREIGN KEY(show_id) REFERENCES shows(id)
+);
+CREATE TABLE shows (
+    id INTEGER,
+    title TEXT NOT NULL,
+    year NUMERIC,
+    episodes INTEGER,
+    PRIMARY KEY(id)
+);
+CREATE TABLE stars (
+    show_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL,
+    FOREIGN KEY(show_id) REFERENCES shows(id),
+    FOREIGN KEY(person_id) REFERENCES people(id)
+);
+CREATE TABLE writers (
+    show_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL,
+    FOREIGN KEY(show_id) REFERENCES shows(id),
+    FOREIGN KEY(person_id) REFERENCES people(id)
+);
+
+#see word for flow layout
+
+#DATA TYpes
+BLOB-Binary large object
+INTEGER
+NUMERIC
+REAL-Decimal etc
+TEXT
+
+
+#NOT NULL
+#UNIQUE-eg every row in that column need to be unique
+
+PRIMARY KEY
+FOREIGN KEY
+
+ sqlite>SELECT * FROM people LIMIT 10
+   ...> ;
+1|Fred Astaire|1899
+2|Lauren Bacall|1924
+3|Brigitte Bardot|1934
+5|Ingmar Bergman|1918
+6|Ingrid Bergman|1915
+8|Marlon Brando|1924
+9|Richard Burton|1925
+12|Bette Davis|1908
+13|Doris Day|1922
+14|Olivia de Havilland|1916
+
+sqlite> SELECT * FROM shows LIMIT 10;
+62614|Zeg 'ns Aaa|1981|227
+63881|Catweazle|1970|26
+63962|UFO|1970|26
+65269|Ace of Wands|1970|46
+65270|The Adventures of Don Quick|1970|6
+65271|Albert and Victoria|1970|12
+65272|All My Children|1970|4337
+65273|Archie's Funhouse|1970|23
+65274|Arnie|1970|48
+65276|Barefoot in the Park|1970|12
+
+sqlite> SELECT * FROM stars LIMIT 10;
+show_id person_id
+62614|378823
+62614|853892
+62614|393936
+62614|496420
+62614|333162
+62614|180174
+62614|165183
+62614|466749
+63881|625401
+63881|1933
+
+#Here show_idis a FOREIGNkey as it points to show PRIMARY KEY same for person_id
+
+sqlite> SELECT * FROM genres WHERE genre='Comedy' LIMIT 10;
+show_id genre
+62614|Comedy
+63881|Comedy
+65270|Comedy
+65271|Comedy
+65273|Comedy
+65274|Comedy
+65276|Comedy
+65283|Comedy
+65285|Comedy
+65287|Comedy
+
+sqlite> SELECT * FROM shows WHERE id=62614;
+id   title        year episodes     
+62614|Zeg 'ns Aaa|1981|227  
+
+sqlite> SELECT show_id FROM genres WHERE genre='Comedy' LIMIT 10;
+62614
+63881
+65270
+65271
+65273
+65274
+65276
+65283
+65285
+
+
+
+sqlite> SELECT COUNT(show_id) FROM genres WHERE genre='Comedy';
+48706
+
+sqlite> SELECT title FROM shows WHERE id  IN ( SELECT show_id FROM genres WHERE genre='Comedy' LIMIT 10);
+#paranthesis executed first
+
+<ERE id  IN ( SELECT show_id FROM genres WHERE genre='Comedy') LIMIT 10;
+Zeg 'ns Aaa
+Catweazle
+The Adventures of Don Quick
+Albert and Victoria
+Archie's Funhouse
+Arnie
+Barefoot in the Park
+Comedy Tonight
+The Culture Vultures
+Make Room for Granddaddy
+
+
+sqlite> SELECT title FROM shows WHERE id  IN ( SELECT show_id FROM genres WHERE genre='Comedy')ORDER BY title  LIMIT 10;
+#
+#7DaysLater
+#ATown
+#Actress
+#Adulting
+#Adulting
+#AubreyGrams
+#Awkward Dates
+#AwkwardMoment
+#AwkwardMornings
+
+
+ERROR CALLING
+
+sqlite> SELECT * FROM people WHERE name="Steve Carell'
+"  ...> ;
+"  ...> ;
+"  ...>
+"  ...>
+"  ...>
+"  ...>
+"  ...> SELECT * FROM people WHERE name="Steve Carell'
+'  ...> SELECT title FROM shows WHERE id  IN ( SELECT show_id FROM genres WHERE genre='Comedy')ORDER BY title  LIMIT 10;
+'  ...>
+'  ...>
+'  ...> SELECT * FROM people WHERE name="Steve Carell'
+   ...> ;;
+Parse error: near "Steve": syntax error
+   Carell' ; ;     SELECT * FROM people WHERE name="Steve Carell' SELECT title F
+                                      error here ---^
+
+sqlite> SELECT * FROM people WHERE name='Steve Carell';
+id
+136797|Steve Carell|1962
+
+
+sqlite> SELECT * FROM stars WHERE person_id=136797;
+show_id person_id
+115148|136797
+118420|136797
+306410|136797
+381741|136797
+386676|136797
+428108|136797
+804423|136797
+12054924|136797
+1489335|136797
+1618221|136797
+2012383|136797
+2051662|136797
+2294818|136797
+2567084|136797
+3565412|136797
+3590460|136797
+4944600|136797
+5706648|136797
+7953398|136797
+9612516|136797
+
+sqlite> SELECT title FROM shows WHERE id=115148;     
+The Dana Carvey Show
+
+sqlite> SELECT * FROM people WHERE name='Steve Carell'
+   ...> ;
+136797|Steve Carell|1962
+
+sqlite> SELECT id  FROM people WHERE name='Steve Carell';          
+136797
+
+sqlite> SELECT * FROM stars WHERE person_id=(SELECT id FROM people WHERE name='Steve Carell');#= used as single steve#
+115148|136797
+118420|136797
+306410|136797
+381741|136797
+386676|136797
+428108|136797
+804423|136797
+12054924|136797
+1489335|136797
+1618221|136797
+2012383|136797
+2051662|136797
+2294818|136797
+2567084|136797
+3565412|136797
+3590460|136797
+4944600|136797
+5706648|136797
+7953398|136797
+9612516|136797
+
+sqlite> SELECT show_id FROM stars WHERE person_id=(SELECT id FROM people WHERE name ='Steve Carell');
+115148
+118420
+306410
+381741
+386676
+428108
+804423
+12054924
+1489335
+1618221
+2012383
+2051662
+2294818
+2567084
+3565412
+3590460
+4944600
+5706648
+7953398
+9612516
+
+sqlite> SELECT title FROM shows WHERE id IN(SELECT show_id FROM stars WHERE person_id=(SELECT id FROM people WHERE name='Steve Carell));
+
+<LECT show_id FROM stars WHERE person_id=(SELECT id FROM people WHERE name='Steve Carell'));
+The Dana Carvey Show
+Over the Top
+Watching Ellie
+Come to Papa
+The Office
+Entertainers with Byron Allen
+The Naked Trucker and T-Bones Show
+ES.TV HD
+Mark at the Movies
+Inside Comedy
+Rove LA
+Metacafe Unfiltered
+Fabrice Fabrice Interviews
+Riot
+Séries express
+Hollywood Sessions
+First Impressions with Dana Carvey
+LA Times: The Envelope
+Space Force
+Some Good News
+
+sqlite> SELECT * FROM shows LIMIT 10;     
+62614|Zeg 'ns Aaa|1981|227
+63881|Catweazle|1970|26
+63962|UFO|1970|26
+65269|Ace of Wands|1970|46
+65270|The Adventures of Don Quick|1970|6
+65271|Albert and Victoria|1970|12
+65272|All My Children|1970|4337
+65273|Archie's Funhouse|1970|23
+65274|Arnie|1970|48
+65276|Barefoot in the Park|1970|12
+
+
+sqlite> SELECT * FROM genres LIMIT 10;
+62614|Comedy
+63881|Adventure
+63881|Comedy
+63881|Family
+63962|Action
+63962|Sci-Fi
+65269|Family
+65269|Fantasy
+65270|Comedy
+65270|Sci-Fi
+
+sqlite> SELECT * FROM stars JOIN genres LIMIT 10;
+62614|378823|62614|Comedy
+62614|378823|63881|Adventure
+62614|378823|63881|Comedy
+62614|378823|63881|Family
+62614|378823|63962|Action
+62614|378823|63962|Sci-Fi
+62614|378823|65269|Family
+62614|378823|65269|Fantasy
+62614|378823|65270|Comedy
+62614|378823|65270|Sci-Fi
+
+sqlite> SELECT * FROM shows  JOIN genres  ON shows_id=genres.shows_id LIMIT 10;
+Parse error: no such column: shows_id
+sqlite> SELECT * FROM shows  JOIN genres  ON shows.id=genres.shows_id LIMIT 10;
+Parse error: no such column: genres.shows_id
+sqlite> SELECT * FROM shows  JOIN genres  ON shows.id=genres.show_id LIMIT 10; #shows.id(PRIMARY) genre.show_id (secondary key)
+id                     episode show_id genre
+62614|Zeg 'ns Aaa|1981|227|62614|Comedy
+63881|Catweazle|1970|26|63881|Adventure
+63881|Catweazle|1970|26|63881|Comedy
+63881|Catweazle|1970|26|63881|Family
+63962|UFO|1970|26|63962|Action
+63962|UFO|1970|26|63962|Sci-Fi
+65269|Ace of Wands|1970|46|65269|Family
+65269|Ace of Wands|1970|46|65269|Fantasy
+65270|The Adventures of Don Quick|1970|6|65270|Comedy
+65270|The Adventures of Don Quick|1970|6|65270|Sci-Fi
+
+sqlite> SELECT * FROM shows JOIN ratings ON shows.id=ratings.show_id WHERE TITLE='The Office';
+112108|The Office|1995|6|112108|7.5|45
+290978|The Office|2001|14|290978|8.5|112944
+386676|The Office|2005|188|386676|9.0|585206
+1791001|The Office|2010|30|1791001|4.7|56
+2186395|The Office|2012|8|2186395|6.0|12
+8305218|The Office|2019|28|8305218|5.7|5718 
+
+
+sqlite> SELECT title FROM people WHERE name='Steve Carell';
+Parse error: no such column: title
+  SELECT title FROM people WHERE name='Steve Carell';
+         ^--- error here
+sqlite> SELECT title FROM people       
+
+ChatGPT
+
+It seems there might be a misunderstanding or a potential error in your query. 
+The error message indicates that there is no column named "title" in the "people" table.
+ The correct query to retrieve the title of a person might involve joining with 
+ another table that contains information about shows or movies. 
+ Here's an example assuming you have a "shows" table:
+
+sql
+Copy code
+SELECT shows.title
+FROM people
+JOIN shows ON people.show_id = shows.id
+WHERE people.name = 'Steve Carell';
+In this example:
+
+people.show_id assumes there is a column in the "people" table referencing the "id" 
+column in the "shows" table.
+shows.title retrieves the title from the "shows" table.
+Please adjust the column names and table relationships based on your database schema.
+ If you provide more information about your table structures, I can give you a more accurate query.
+
+ sqlite> SELECT title FROM people
+   ...> JOIN stars on people.id=stars.person_id
+   ...> JOIN shows on stars.show_id=shows.id   
+   ...> WHERE name='Steve Carell';
+The Dana Carvey Show
+Over the Top
+Watching Ellie
+Come to Papa
+The Office
+Entertainers with Byron Allen
+The Naked Trucker and T-Bones Show
+Some Good News
+ES.TV HD
+Mark at the Movies
+Inside Comedy
+Rove LA
+Metacafe Unfiltered
+Fabrice Fabrice Interviews
+Riot
+Séries express
+Hollywood Sessions
+First Impressions with Dana Carvey
+LA Times: The Envelope
+Space Force
+
+people.show_id assumes there is a column in the "people" table referencing the "id" column
+ in the "shows" table.
+shows.title retrieves the title from the "shows" table.
+
+sqlite> SELECT * From stars WHERE show_id=62614;
+62614|378823
+62614|853892
+62614|393936
+62614|496420
+62614|333162
+62614|180174
+62614|165183
+62614|466749
+sqlite> SELECT title  From stars WHERE show_id=62614;
+Parse error: no such column: title
+  SELECT title  From stars WHERE show_id=62614;
+         ^--- error here
+sqlite> SELECT title  From shows  WHERE show_id=62614;
+Parse error: no such column: show_id
+  SELECT title  From shows  WHERE show_id=62614;
+                  
+sqlite> SELECT title FROM people,stars,shows        
+   ...> WHERE people.id=stars.person_id   #building link          
+   ...> AND shows.id=stars.show_id                  
+   ...> AND name ='Steve Carell';
+The Dana Carvey Show
+Over the Top
+Watching Ellie
+Come to Papa
+The Office
+Entertainers with Byron Allen
+The Naked Trucker and T-Bones Show
+Some Good News
+ES.TV HD
+Mark at the Movies
+Inside Comedy
+Rove LA
+Metacafe Unfiltered
+Fabrice Fabrice Interviews
+Riot
+Séries express
+Hollywood Sessions
+First Impressions with Dana Carvey
+LA Times: The Enve
+
+
+sqlite> SELECT * FROM people WHERE name='Steve'; 
+1880811|Steve|
+6109489|Steve|
+10470749|Steve|
+11859694|Steve|
+12105385|Steve|
+12363756|Steve|
+12596781|Steve|
+13574708|Steve|
+13744353|Steve|
+
+sqlite> SELECT * FROM people WHERE name LIKE 'Steve C%'; 
+34335|Steve Cassling|
+127472|Steve Caballero|1964
+131409|Steve Comisar|1961
+136399|Steve Cardenas|1974
+136797|Steve Carell|1962
+138021|Steve Carlson|1943
+146271|Steve Caton|
+148103|Steve Cell|1970
+152259|Steve Chaplin|
+153836|Steve Chase|
+166333|Steve Clemons|
+172694|Steve Collins|1964
+175035|Steve Connell|
+175358|Steve Connolly|
+175726|Steve Conrad|1968
+176869|Steve Coogan|1965
+179871|Steve Corino|1973
+183548|Steve Coulter|1960
+186122|Steve Cram|1960
+188936|Steve Cropper|1941
+192056|Steve Cumyn|
+972384|Steve Chivers|
+1006773|Steve Cradock|1969
+1017737|Steve Carnahan|
+1122104|Steve Cochrane|1977
+1163667|Steve Callaghan|1968
+1189025|Steve Czarnecki|1973
+1303455|Steve Claridge|1966
+1308295|Steve Cuiffo|
+1685160|Steve Crest|1967
+1765797|Steve Coulter|1984
+1783121|Steve Cirbus|
+1945413|Steve Cochrane|
+2163430|Steve Coppell|1955
+2233062|Steve Coats|
+2334634|Steve Cooper|
+2382719|Steve Clemmons|
+2438804|Steve Cooney|
+2588076|Steve Cerritos|
+2647874|Steve Carrier|
+2694773|Steve Crandall|
+2722409|Steve Cuccio|1961
+2788802|Steve Corona|
+2836114|Steve Curtis|
+2837221|Steve Chalke|1955
+3025984|Steve Clamp|
+3120507|Steve Coon|
+3126699|Steve Cobb|
+3177043|Steve Cramwell|
+3184360|Steve Coleman|
+3303748|Steve Coker|
+3509458|Steve Cannon|
+3524836|Steve Cash|
+3534070|Steve Cannane|
+3562104|Steve Cwik|
+3717469|Steve Cook|
+3832932|Steve Cohen|
+3857683|Steve Crocker|
+3920675|Steve C. Porter|1965
+3948793|Steve Clarkson|
+3949665|Steve Crombie|
+4007514|Steve Cozart|
+4016270|Steve Cunningham|
+4071863|Steve Carey|
+4177847|Steve Czapiewski|
+4262625|Steve Clerge|
+4851556|Steve Cleveland|
+4854636|Steve Curle|
+5222206|Steve Cummings|
+5276169|Steve Call|
+5424105|Steve Cyr|
+5506156|Steve Clay|
+5613697|Steve Correia|
+5860539|Steve Cook|
+5920241|Steve Carlson|
+5940827|Steve Cospito|
+6052447|Steve Cohen|
+6104361|Steve Case|
+6254707|Steve Crisp|
+6376728|Steve Chizmadia|
+6398122|Steve Carlsen|
+6456786|Steve Cook|
+6770355|Steve Cooke|
+6792241|Steve Cox|
+6933345|Steve Chestney|
+7128150|Steve Cousins|
+7265636|Steve Cortes|
+7322490|Steve Craske|
+7323423|Steve Cooke|
+7481095|Steve Cha|
+7604448|Steve Crenshaw|
+7926323|Steve Cropley|
+8018470|Steve Crum|
+8643603|Steve Couture|
+8806937|Steve Castellotti|
+8830543|Steve Clark|1924
+8942377|Steve Carruthers|
+9229868|Steve Crawshaw|
+9443205|Steve Chenevey|
+9573250|Steve Carpenter|
+9582393|Steve Chambers|
+9685927|Steve Cook|
+9728242|Steve Connolly|
+9778010|Steve Clarkson|
+10103937|Steve Cooke|
+10119935|Steve Chao|
+10309975|Steve Capstick|
+10349925|Steve Cottam|
+11912500|Steve Conrad|
+12261988|Steve Cozzolino|
+12293852|Steve Cody|
+12371158|Steve Carter|
+12849621|Steve Craddock|
+13054036|Steve Christakos|
+13075633|Steve Cioccolanti|
+13278427|Steve Clarke|
+13809518|Steve Clemmons|
+13848361|Steve Chow|
+14044791|Steve Cardillo|
+
+sqlite> .timer
+Usage: .timer on|off
+sqlite> .timer on
+sqlite> SELECT * FROM shows WHERE title='The Office';
+112108|The Office|1995|6
+290978|The Office|2001|14
+386676|The Office|2005|188
+1791001|The Office|2010|30
+2186395|The Office|2012|8
+8305218|The Office|2019|28
+20877972|The Office|2022|20
+Run Time: real 0.032 user 0.000000 sys 0.000000
+
+sqlite> CREATE INDEX title_indes ON shows(title);
+Run Time: real 0.197 user 0.062500 sys 0.031250
+#Creates a B there
+
+sqlite> SELECT * FROM shows WHERE title='The Office';
+112108|The Office|1995|6
+290978|The Office|2001|14
+386676|The Office|2005|188
+1791001|The Office|2010|30
+2186395|The Office|2012|8
+8305218|The Office|2019|28
+20877972|The Office|2022|20
+Run Time: real 0.000 user 0.000000 sys 0.000000
+
+
+
