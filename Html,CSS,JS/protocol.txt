@@ -1,0 +1,97 @@
+$ curl -I  https://www.harvard.edu/
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 229460
+Cache-Control: public, max-age=1200
+Content-Type: text/html; charset=UTF-8
+Link: <https://www.harvard.edu/>; rel=shortlink
+Permissions-Policy: geolocation=(self)
+Referrer-Policy: no-referrer-when-downgrade
+Server: nginx
+Strict-Transport-Security: max-age=31622400
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Pantheon-Styx-Hostname: styx-fe1-b-86568b7775-b222r
+X-Styx-Req-Id: 159a9161-cd8d-11ee-8799-aa1b1e7da747
+X-Xss-Protection: 1; mode=block
+Age: 1170
+Accept-Ranges: bytes
+Via: 1.1 varnish, 1.1 varnish, 1.1 varnish, 1.1 varnish
+Date: Sat, 17 Feb 2024 12:26:44 GMT
+X-Served-By: cache-chi-klot8100144-CHI, cache-maa10235-MAA, cache-maa10224-MAA, cache-maa10237-MAA 
+X-Cache: HIT, MISS, MISS, MISS
+X-Cache-Hits: 69, 0, 0, 0
+X-Timer: S1708172804.934011,VS0,VE269
+Vary: Accept-Encoding, Cookie, Cookie, orig-host
+
+
+$ curl -I  http://www.harvard.edu/ #http used
+HTTP/1.1 301 Moved Permanently # 301 not 200 moved to see line 34 new Location
+Connection: close
+Content-Length: 0
+Server: Varnish
+Retry-After: 0
+Location: https://www.harvard.edu/
+Accept-Ranges: bytes
+Date: Sat, 17 Feb 2024 12:30:22 GMT
+Via: 1.1 varnish
+X-Served-By: cache-del21742-DEL
+X-Cache: HIT
+X-Cache-Hits: 0
+Strict-Transport-Security: max-age=300
+
+$ curl -I  http://harvard.edu/
+HTTP/1.1 301 Moved Permanently
+Connection: close
+Content-Length: 0
+Server: Varnish
+Retry-After: 0
+Location: https://harvard.edu/
+Accept-Ranges: bytes
+Date: Sat, 17 Feb 2024 12:32:11 GMT
+Via: 1.1 varnish
+X-Served-By: cache-maa10232-MAA
+X-Cache: HIT
+X-Cache-Hits: 0
+Strict-Transport-Security: max-age=300
+
+
+
+200 OK
+
+301 Moved Permanently 302 Found
+
+304 Not Modified
+
+307 Temporary Redirect
+
+401 Unauthorized
+
+403 Forbidden
+
+404 Not Found
+
+418 I'm a Teapot
+
+500 Internal Server Error
+
+503 Service Unavailable
+
+
+GET /search?q=cats HTTP/1.1 #q for query depends on browser ,? for user input
+ Host: www.google.com
+
+ https://www.google.com/search?q=cats
+
+$ curl -I https://safetyschool.org/
+curl: (7) Failed to connect to safetyschool.org port 443 after 3981 ms: Couldn't connect to server
+
+arunk@MALINI MINGW64 ~/OneDrive/Documents/ArunC/Html,CSS,JS (main)
+$ curl -I http://safetyschool.org/
+HTTP/1.1 301 Moved Permanently
+Server: Sun-ONE-Web-Server/6.1
+Date: Sat, 17 Feb 2024 12:41:59 GMT
+Content-length: 122
+Content-type: text/html
+Location: http://www.yale.edu
+Connection: close
